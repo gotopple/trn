@@ -1,7 +1,10 @@
 package id
 
 import (
+	"encoding/base32"
 	"fmt"
+	"strings"
+
 	"github.com/google/uuid"
 )
 
@@ -20,6 +23,49 @@ func NewTRN(partition, service, region, account, prefix string) TRN {
 		panic(err)
 	}
 	return TRN(fmt.Sprintf(format, partition, service, region, account, prefix, id.String()))
+}
+
+func Decode(trn string) (TRN, error) {
+	o, err := base32.StdEncoding.DecodeString(trn)
+	if err != nil {
+		return TRN(``), err
+	}
+	// TODO: validate actual TRN
+	return TRN(o), err
+}
+
+func (t TRN) Encode() string {
+	return base32.StdEncoding.EncodeToString([]byte(t))
+}
+
+func (t TRN) ID() string {
+	parts := strings.SplitN(string(t), `:`, 6)
+	return parts[0]
+}
+
+func (t TRN) Partition() string {
+	parts := strings.SplitN(string(t), `:`, 6)
+	return parts[1]
+}
+
+func (t TRN) Service() string {
+	parts := strings.SplitN(string(t), `:`, 6)
+	return parts[2]
+}
+
+func (t TRN) Region() string {
+	parts := strings.SplitN(string(t), `:`, 6)
+	return parts[3]
+}
+
+func (t TRN) Account() string {
+	parts := strings.SplitN(string(t), `:`, 6)
+	return parts[4]
+}
+
+func (t TRN) Resource() string {
+	parts := strings.SplitN(string(t), `:`, 6)
+	return parts[5]
 }
 
 type ServiceIdentifier int

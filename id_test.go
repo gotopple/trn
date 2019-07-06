@@ -31,3 +31,24 @@ func TestNewTRN(t *testing.T) {
 		}
 	}
 }
+
+func TestEncoding(t *testing.T) {
+	i := NewTRN(`topple`, `content`, `us-west`, `1234`, `prefix`)
+	encoded := i.Encode()
+	o, err := Decode(encoded)
+	if err != nil {
+		t.Error(err)
+	}
+	if o != i {
+		t.Error(`decoded TRN does not match original`)
+	}
+
+}
+
+func TestComponentReads(t *testing.T) {
+	i := NewTRN(`topple`, `content`, `us-west`, `1234`, `prefix`)
+	p := i.Partition()
+	if p != `topple` {
+		t.Errorf(`incorrect partition %v`, p)
+	}
+}
