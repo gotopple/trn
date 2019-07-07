@@ -1,4 +1,4 @@
-package id
+package trn
 
 import (
 	"encoding/base32"
