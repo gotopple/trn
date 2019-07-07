@@ -38,34 +38,43 @@ func (t TRN) Encode() string {
 	return base32.StdEncoding.EncodeToString([]byte(t))
 }
 
-func (t TRN) ID() string {
+func (t TRN) Components() (id, partition, service, region, account, resource string) {
 	parts := strings.SplitN(string(t), `:`, 6)
-	return parts[0]
+	if len(parts) != 6 {
+		panic(`invalid TRN format`)
+	}
+	return parts[0], parts[1], parts[2], parts[3], parts[4], parts[5]
+
+}
+
+func (t TRN) ID() string {
+	i, _, _, _, _, _ := t.Components()
+	return i
 }
 
 func (t TRN) Partition() string {
-	parts := strings.SplitN(string(t), `:`, 6)
-	return parts[1]
+	_, p, _, _, _, _ := t.Components()
+	return p
 }
 
 func (t TRN) Service() string {
-	parts := strings.SplitN(string(t), `:`, 6)
-	return parts[2]
+	_, _, s, _, _, _ := t.Components()
+	return s
 }
 
 func (t TRN) Region() string {
-	parts := strings.SplitN(string(t), `:`, 6)
-	return parts[3]
+	_, _, _, r, _, _ := t.Components()
+	return r
 }
 
 func (t TRN) Account() string {
-	parts := strings.SplitN(string(t), `:`, 6)
-	return parts[4]
+	_, _, _, _, a, _ := t.Components()
+	return a
 }
 
 func (t TRN) Resource() string {
-	parts := strings.SplitN(string(t), `:`, 6)
-	return parts[5]
+	_, _, _, _, _, r := t.Components()
+	return r
 }
 
 type ServiceIdentifier int
