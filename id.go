@@ -17,6 +17,7 @@ const format = `trn:%v:%v:%v:%v:%v/%v`
 type TRN string
 
 func NewTRN(partition, service, region, account, prefix string) TRN {
+	// TODO: validate that none of the input contain colons
 	id, err := uuid.NewRandom()
 	if err != nil {
 		// random has exhausted entropy?
@@ -86,7 +87,7 @@ const (
 	Broadcast
 )
 
-var ServiceNames = []string{
+var serviceNames = []string{
 	`metadata`,
 	`ingress`,
 	`content`,
@@ -94,10 +95,10 @@ var ServiceNames = []string{
 }
 
 func (s ServiceIdentifier) String() string {
-	return ServiceNames[s]
+	return serviceNames[s]
 }
 func ParseServiceIdentifier(i string) (ServiceIdentifier, error) {
-	for k, v := range ServiceNames {
+	for k, v := range serviceNames {
 		if i == v {
 			return ServiceIdentifier(k), nil
 		}
