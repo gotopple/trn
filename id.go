@@ -11,7 +11,9 @@ import (
 // Following in the style of URN / ARN:
 //  * https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 //  * https://tools.ietf.org/html/rfc2141
-// trn:PARTITION:SERVICE:REGION:ACCOUNT:PREFIX/UUID
+//  * trn:PARTITION:SERVICE:REGION:ACCOUNT:PREFIX/UUID
+// Example:
+//  * `trn:topple:content:sfo2:12341234:content/3e84977e-5e9a-4494-97a3-3ca15b427569`
 const format = `trn:%v:%v:%v:%v:%v/%v`
 
 type TRN string
@@ -85,6 +87,7 @@ const (
 	Ingress
 	Content
 	Broadcast
+	Account
 )
 
 var serviceNames = []string{
@@ -92,6 +95,7 @@ var serviceNames = []string{
 	`ingress`,
 	`content`,
 	`broadcast`,
+	`account`,
 }
 
 func (s ServiceIdentifier) String() string {
