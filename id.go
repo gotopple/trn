@@ -1,6 +1,7 @@
 package trn
 
 import (
+	"database/sql/driver"
 	"encoding/base32"
 	"fmt"
 	"strings"
@@ -78,6 +79,24 @@ func (t TRN) Account() string {
 func (t TRN) Resource() string {
 	_, _, _, _, _, r := t.Components()
 	return r
+}
+
+var (
+	ErrNotStringType = fmt.Errorf(`trn can only be decoded from a string type`)
+)
+
+func (t *TRN) Scan(value interface{}) error {
+	s, ok := value.(string)
+	if !ok {
+		return ErrNotStringType
+	}
+	var err error
+	*t, err = Decode(s)
+	return err
+}
+
+func (t TRN) Value() (driver.Value, error) {
+	return string(t), nil
 }
 
 type ServiceIdentifier int
