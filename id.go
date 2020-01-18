@@ -26,7 +26,7 @@ func NewTRN(partition, service, region, account, prefix string) TRN {
 		// random has exhausted entropy?
 		panic(err)
 	}
-	return TRN(fmt.Sprintf(format, partition, service, region, account, prefix, id.String()))
+	return TRN(fmt.Sprintf(Format, partition, service, region, account, prefix, id.String()))
 }
 
 func Decode(trn string) (TRN, error) {
