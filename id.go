@@ -15,7 +15,7 @@ import (
 //  * trn:PARTITION:SERVICE:REGION:ACCOUNT:PREFIX/UUID
 // Example:
 //  * `trn:topple:content:sfo2:12341234:content/3e84977e-5e9a-4494-97a3-3ca15b427569`
-const format = `trn:%v:%v:%v:%v:%v/%v`
+const Format = `trn:%v:%v:%v:%v:%v/%v`
 
 type TRN string
 
