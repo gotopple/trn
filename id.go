@@ -4,7 +4,9 @@ import (
 	"database/sql/driver"
 	"encoding/base32"
 	"fmt"
+	"math/rand"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -27,6 +29,24 @@ func NewTRN(partition, service, region, account, prefix string) TRN {
 		panic(err)
 	}
 	return TRN(fmt.Sprintf(Format, partition, service, region, account, prefix, id.String()))
+}
+
+const charset = `0123456789`
+
+var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+func slowRand(length int) string {
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
+}
+
+func NewSlowTRN(partition, service, region, account, prefix string) TRN {
+	// TODO: validate that none of the input contain colons
+	id := slowRand(10)
+	return TRN(fmt.Sprintf(Format, partition, service, region, account, prefix, id))
 }
 
 func Decode(trn string) (TRN, error) {
