@@ -1,6 +1,7 @@
 package trn
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -30,6 +31,15 @@ func TestNewTRN(t *testing.T) {
 			t.Errorf("ContentID for (%v, %v, %v, %v) was incorrect, got: %v wanted w/ prefix: %v", e.p, e.r, e.a, e.pre, o, e.prefix)
 		}
 	}
+}
+
+func TestGenerateServiceInvite(t *testing.T) {
+	o := NewTRN(`test`, `account`, `local`, ``, `/serviceinvite`)
+	fmt.Printf("Random ServiceInvite: %s\n", o.Encode())
+	o = NewTRN(`test`, `account`, `local`, ``, `/invite`)
+	fmt.Printf("Random Invite: %s\n", o.Encode())
+	o = NewTRN(`test`, `account`, `local`, ``, `/discount`)
+	fmt.Printf("Random Discount: %s\n", o.Encode())
 }
 
 func TestEncoding(t *testing.T) {

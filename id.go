@@ -127,6 +127,7 @@ const (
 	Content
 	Broadcast
 	Account
+	Workspace
 )
 
 var serviceNames = []string{
@@ -135,6 +136,7 @@ var serviceNames = []string{
 	`content`,
 	`broadcast`,
 	`account`,
+	`workspace`,
 }
 
 func (s ServiceIdentifier) String() string {
