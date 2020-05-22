@@ -35,11 +35,17 @@ func TestNewTRN(t *testing.T) {
 
 func TestGenerateServiceInvite(t *testing.T) {
 	o := NewTRN(`test`, `account`, `local`, ``, `/serviceinvite`)
-	fmt.Printf("Random ServiceInvite: %s\n", o.Encode())
+	printTRN("Random ServiceInvite", o)
 	o = NewTRN(`test`, `account`, `local`, ``, `/invite`)
-	fmt.Printf("Random Invite: %s\n", o.Encode())
+	printTRN("Random Invite", o)
 	o = NewTRN(`test`, `account`, `local`, ``, `/discount`)
-	fmt.Printf("Random Discount: %s\n", o.Encode())
+	printTRN("Random Discount", o)
+	o = NewTRN(`test`, `account`, `local`, `1`, `/user`)
+	printTRN("Random User", o)
+}
+
+func printTRN(note string, o TRN) {
+	fmt.Printf("%s: %s\n\t%s\t%s\t%s\t%s\t%s\n", note, o.Encode(), o.Partition(), o.Service(), o.Region(), o.Account(), o.Resource())
 }
 
 func TestEncoding(t *testing.T) {

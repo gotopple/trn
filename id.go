@@ -116,7 +116,7 @@ func (t *TRN) Scan(value interface{}) error {
 }
 
 func (t TRN) Value() (driver.Value, error) {
-	return string(t), nil
+	return t.Encode(), nil
 }
 
 type ServiceIdentifier int
