@@ -43,6 +43,11 @@ func slowRand(length int) string {
 	return string(b)
 }
 
+func IsValid(t TRN) bool {
+	parts := strings.SplitN(string(t), `:`, 6)
+	return len(parts) == 6 && parts[0] == `trn`
+}
+
 func NewSlowTRN(partition, service, region, account, prefix string) TRN {
 	// TODO: validate that none of the input contain colons
 	id := slowRand(10)

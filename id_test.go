@@ -6,6 +6,23 @@ import (
 	"testing"
 )
 
+func TestValidity(t *testing.T) {
+	c := []struct {
+		t  TRN
+		eo bool
+	}{
+		{TRN(`trn:partition:content:region:account:prefix/id`), true},
+		{TRN(`trn:partition:content:region:account`), false},                // not enough components
+		{TRN(`:partition:content:region:account:prefix/id`), false},         // missing preamble
+		{TRN(`trn:partition:content:region:account:prefix/id:extra`), true}, // extra components are treated as part of id
+	}
+	for _, e := range c {
+		if IsValid(e.t) != e.eo {
+			t.Errorf("case %v expected: %v, got: %v", e.t, e.eo, !e.eo)
+		}
+	}
+}
+
 // TOOD test for invalid input
 func TestNewTRN(t *testing.T) {
 	c := []struct {
