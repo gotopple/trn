@@ -4,7 +4,9 @@ import (
 	"database/sql/driver"
 	"encoding/base32"
 	"fmt"
+	"math/rand"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -27,6 +29,29 @@ func NewTRN(partition, service, region, account, prefix string) TRN {
 		panic(err)
 	}
 	return TRN(fmt.Sprintf(Format, partition, service, region, account, prefix, id.String()))
+}
+
+const charset = `0123456789`
+
+var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+func slowRand(length int) string {
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
+}
+
+func IsValid(t TRN) bool {
+	parts := strings.SplitN(string(t), `:`, 6)
+	return len(parts) == 6 && parts[0] == `trn`
+}
+
+func NewSlowTRN(partition, service, region, account, prefix string) TRN {
+	// TODO: validate that none of the input contain colons
+	id := slowRand(10)
+	return TRN(fmt.Sprintf(Format, partition, service, region, account, prefix, id))
 }
 
 // Decode decodes an encoded TRN from a string. Decode will not attempt to decode strings that
@@ -102,7 +127,7 @@ func (t *TRN) Scan(value interface{}) error {
 }
 
 func (t TRN) Value() (driver.Value, error) {
-	return string(t), nil
+	return t.Encode(), nil
 }
 
 type ServiceIdentifier int
@@ -113,6 +138,7 @@ const (
 	Content
 	Broadcast
 	Account
+	Workspace
 )
 
 var serviceNames = []string{
@@ -121,6 +147,7 @@ var serviceNames = []string{
 	`content`,
 	`broadcast`,
 	`account`,
+	`workspace`,
 }
 
 func (s ServiceIdentifier) String() string {

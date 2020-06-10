@@ -1,9 +1,27 @@
 package trn
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
+
+func TestValidity(t *testing.T) {
+	c := []struct {
+		t  TRN
+		eo bool
+	}{
+		{TRN(`trn:partition:content:region:account:prefix/id`), true},
+		{TRN(`trn:partition:content:region:account`), false},                // not enough components
+		{TRN(`:partition:content:region:account:prefix/id`), false},         // missing preamble
+		{TRN(`trn:partition:content:region:account:prefix/id:extra`), true}, // extra components are treated as part of id
+	}
+	for _, e := range c {
+		if IsValid(e.t) != e.eo {
+			t.Errorf("case %v expected: %v, got: %v", e.t, e.eo, !e.eo)
+		}
+	}
+}
 
 // TOOD test for invalid input
 func TestNewTRN(t *testing.T) {
@@ -30,6 +48,21 @@ func TestNewTRN(t *testing.T) {
 			t.Errorf("ContentID for (%v, %v, %v, %v) was incorrect, got: %v wanted w/ prefix: %v", e.p, e.r, e.a, e.pre, o, e.prefix)
 		}
 	}
+}
+
+func TestGenerateServiceInvite(t *testing.T) {
+	o := NewTRN(`test`, `account`, `local`, ``, `/serviceinvite`)
+	printTRN("Random ServiceInvite", o)
+	o = NewTRN(`test`, `account`, `local`, ``, `/invite`)
+	printTRN("Random Invite", o)
+	o = NewTRN(`test`, `account`, `local`, ``, `/discount`)
+	printTRN("Random Discount", o)
+	o = NewTRN(`test`, `account`, `local`, `1`, `/user`)
+	printTRN("Random User", o)
+}
+
+func printTRN(note string, o TRN) {
+	fmt.Printf("%s: %s\n\t%s\t%s\t%s\t%s\t%s\n", note, o.Encode(), o.Partition(), o.Service(), o.Region(), o.Account(), o.Resource())
 }
 
 func TestEncoding(t *testing.T) {
