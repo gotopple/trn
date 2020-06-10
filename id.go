@@ -29,7 +29,13 @@ func NewTRN(partition, service, region, account, prefix string) TRN {
 	return TRN(fmt.Sprintf(Format, partition, service, region, account, prefix, id.String()))
 }
 
+// Decode decodes an encoded TRN from a string. Decode will not attempt to decode strings that
+// are not encoded. It should detect the TRN preamble, validate the TRN structure, and shortcut
+// the operation.
 func Decode(trn string) (TRN, error) {
+	if parts := strings.SplitN(trn, `:`, 6); strings.HasPrefix(trn, `trn:`) && len(parts) == 6 {
+		return TRN(trn), nil
+	}
 	o, err := base32.StdEncoding.DecodeString(trn)
 	if err != nil {
 		return TRN(``), err

@@ -44,6 +44,21 @@ func TestEncoding(t *testing.T) {
 	}
 }
 
+func TestDecodeShortcut(t *testing.T) {
+	rawCorrect := `trn:::::f`
+	r1, err := Decode(rawCorrect)
+	if err != nil {
+		t.Error(err)
+	}
+	if r1.Resource() != `f` {
+		t.Errorf(`unexpected Resource value, %s`, r1.Resource())
+	}
+	rawShort := `trn:::`
+	if _, err = Decode(rawShort); err == nil {
+		t.Errorf(`missing expected error`)
+	}
+}
+
 func TestDecodeFailure(t *testing.T) {
 	i := `not a b32 trn`
 	_, err := Decode(i)
